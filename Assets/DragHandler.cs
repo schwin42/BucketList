@@ -24,6 +24,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	public void OnBeginDrag (PointerEventData eventData)
 	{
 		lerper.TerminateLerp ();
+		UiController.instance.SelectButton (gameObject);
 		itemBeingDragged = gameObject;
 //		startPosition = transform.position;
 //		startParent = 
@@ -43,11 +44,11 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
 	public void OnEndDrag (PointerEventData eventData)
 	{
-		print ("end drag");
+		//print ("end drag");
 		itemBeingDragged = null;
 		GetComponent<CanvasGroup> ().blocksRaycasts = true;
 		lerper.LerpToTransform (nextParent, () => { 
-			print("set parent");
+			//print("set parent");
 			transform.SetParent(nextParent); 
 		});
 	}

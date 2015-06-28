@@ -5,20 +5,18 @@ using UnityEngine.UI;
 
 public class Main : MonoBehaviour
 {
-	public GameObject uiPrefab_Goal;
-	public GridLayoutGroup uiHierarchy_GoalBankPanel;
+	#region Data
 	public List<Character> characterRoster = new List<Character> {
 		new Character() {
 			characterName = "Alex",
 			relationships = new List<Relationship> { new Relationship("Becky", 0.8F, 0.7F, "married") },
-			attributes = new List<Attribute> { 
-				new Attribute("{0} is married to {1}", "Alex", new [] {"Becky"}),
-				new Attribute("{0} is attracted to {1}", "Alex", new [] {"Crystal"}), 
+			attributes = new List<CharacterAttribute> { 
+				new CharacterAttribute("{0} is married to {1}", "Alex", new [] {"Becky"}),
+				new CharacterAttribute("{0} is attracted to {1}", "Alex", new [] {"Crystal"}), 
 			},
-			goals = new List<Goal> { potentialGoalsForAlex[0], potentialGoalsForAlex[1] },
 		}
 	};
-	public static List<Goal> potentialGoalsForAlex = new List<Goal> {
+	public List<Goal> potentialGoalsForAlex = new List<Goal> {
 		new Goal ("make out with {0}", "Crystal", DesireColor.Yellow),
 		new Goal ("profess love to {0}", "Becky", DesireColor.Cyan),
 		new Goal ("talk to {0} about {1}", "Crystal", "Drugs", DesireColor.Magenta),
@@ -26,39 +24,32 @@ public class Main : MonoBehaviour
 		new Goal ("apologize to {0} for {1}", "Becky", "all the sodomy", DesireColor.Orange),
 		new Goal ("give a great gift to {0}", "Becky", DesireColor.Cyan),
 		new Goal ("challenge {0} to a dance-off", "Crystal", DesireColor.Red),
-		new Goal ("give a great gift to {0}", "Becky", DesireColor.Cyan),
 		new Goal ("have a threesome with {0} and {1}", "Becky", "Crystal", DesireColor.Blue),
 	};
-	
+	#endregion
+
+	#region Execution
+	private Dictionary<int, Idea> _ideaGenesis;
+	public Dictionary<int, Idea> ideaGenesis { //Master lookup of all ideas for this runtime
+		get {
+			return _ideaGenesis;
+		}
+	} 
+
 	public void Start ()
 	{
 		GenerateGoalPool ();
-		PopulateGoalPanel ();
+
+		UiController.instance.PopulateGoalPanel (potentialGoalsForAlex);
 	}
 
 	public void GenerateGoalPool () {
 		//potentialGoalsForAlex.Shuffle ();
 	}
-
-	public void PopulateGoalPanel ()
-	{
-		Slot[] slots = uiHierarchy_GoalBankPanel.GetComponentsInChildren<Slot> ();
-		for (int i = 0; i < slots.Length; i++) {
-			Slot slot = slots [i];
-			GameObject uiGoal = Instantiate<GameObject> (uiPrefab_Goal);
-			uiGoal.transform.SetParent (slot.gameObject.transform);
-			uiGoal.transform.localPosition = Vector3.zero;
-			MonoGoal monoGoal = uiGoal.GetComponent<MonoGoal> ();
-
-			//Select and remove goal at random
-			var randomIndex = Random.Range(0, potentialGoalsForAlex.Count);
-			monoGoal.goal = potentialGoalsForAlex[randomIndex];
-			potentialGoalsForAlex.RemoveAt(randomIndex);
-
-			uiGoal.GetComponentInChildren<Text> ().text = monoGoal.goal.DisplayText;
-			uiGoal.GetComponent<DragHandler> ().Init ();
-			uiGoal.GetComponent<Image>().color = monoGoal.goal.desireColor.ToColor();
-		}
+	#endregion
+	public void RegisterIdea(Idea idea) {
+		idea.instanceId = _ideaGenesis.Count;
+		_ideaGenesis.Add (idea.instanceId, idea);
 	}
 }
 
@@ -73,14 +64,15 @@ public class World
 
 public abstract class Idea
 {
+	public int instanceId;
 
+	public Idea () {
+
+	}
 }
 
 public abstract class InstantiatedObject : Idea
 {
-	[System.NonSerialized]
-	public int
-		id;
 }
 
 public class Fact : Idea
@@ -102,14 +94,16 @@ public class Fact : Idea
 	}
 }
 
-public class Attribute : Fact
+public class CharacterAttribute : Fact
 {
 
 	public override string subject { get { return character; } }
 
 	public string character;
 
-	public Attribute (string predicate, string subject, string[] objects)
+	public CharacterAttribute () { }
+
+	public CharacterAttribute (string predicate, string subject, string[] objects)
 	{
 		this.predicate = predicate;
 		this.objects = objects;
@@ -119,7 +113,7 @@ public class Attribute : Fact
 }
 
 [System.Serializable]
-public class Goal : Idea
+public class Goal : CharacterAttribute
 {
 	public string DisplayText {
 		get {
@@ -173,7 +167,7 @@ public class Character : InstantiatedObject
 	public List<Item> inventory;
 	public Dictionary<string, float> stats;
 	//public List<string> traits;
-	public List<Attribute> attributes;
+	public List<CharacterAttribute> attributes;
 	public List<Belief> beliefs;
 }
 
@@ -233,21 +227,4 @@ public static class Utilities
 	public static Color ToColor (this DesireColor desireColor) {
 		return Appearance.instance.inspector_reasonColors[(int)desireColor];
 	}
-
-//	public static void Shuffle<T>(this IList<T> list)
-//	{
-//		RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
-//		int n = list.Count;
-//		while (n > 1)
-//		{
-//			byte[] box = new byte[1];
-//			do provider.GetBytes(box);
-//			while (!(box[0] < n * (Byte.MaxValue / n)));
-//			int k = (box[0] % n);
-//			n--;
-//			T value = list[k];
-//			list[k] = list[n];
-//			list[n] = value;
-//		}
-//	}
 }
