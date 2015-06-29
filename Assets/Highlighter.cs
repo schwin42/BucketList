@@ -12,7 +12,7 @@ public class Highlighter : MonoBehaviour
 	void Awake () {
 		uiHierarchy_SelectedBorder = transform.FindChild ("SelectedBorder").GetComponent<Image> ();
 		monoAttribute = GetComponent<MonoAttribute> ();
-		print (monoAttribute);
+		//print (monoAttribute);
 		enableHighlight = false;
 	}
 
@@ -28,11 +28,11 @@ public class Highlighter : MonoBehaviour
 			return _highlightEnabled;
 		}
 		set {
-			print ("enable highlight");
+			//print ("enable highlight");
 
 			if (value == true) { //On enable, set alpha and Attribute color
 				//print (transform.parent.GetComponent<MonoAttribute>());
-				Color attributeColor = ((Goal)monoAttribute.attribute).desireColor.ToColor ();
+				Color attributeColor = monoAttribute.attribute.type_DesireColor.ToColor ();
 				uiHierarchy_SelectedBorder.color = new Color (attributeColor.r, 
 				                                              attributeColor.g, 
 				                                              attributeColor.b, 

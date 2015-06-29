@@ -11,20 +11,21 @@ public class Main : MonoBehaviour
 			characterName = "Alex",
 			relationships = new List<Relationship> { new Relationship("Becky", 0.8F, 0.7F, "married") },
 			attributes = new List<CharacterAttribute> { 
-				new CharacterAttribute("{0} is married to {1}", "Alex", new [] {"Becky"}),
-				new CharacterAttribute("{0} is attracted to {1}", "Alex", new [] {"Crystal"}), 
+//				new CharacterAttribute("{0} is married to {1}", "Alex", new [] {"Becky"}),
+//				new CharacterAttribute("{0} is attracted to {1}", "Alex", new [] {"Crystal"}), 
 			},
 		}
 	};
 	public List<Goal> potentialGoalsForAlex = new List<Goal> {
-		new Goal ("make out with {0}", "Crystal", DesireColor.Yellow),
-		new Goal ("profess love to {0}", "Becky", DesireColor.Cyan),
-		new Goal ("talk to {0} about {1}", "Crystal", "Drugs", DesireColor.Magenta),
-		new Goal ("reminisce with {0} about {1}", "Becky", "that time you did it in the apple tree", DesireColor.Green),
-		new Goal ("apologize to {0} for {1}", "Becky", "all the sodomy", DesireColor.Orange),
-		new Goal ("give a great gift to {0}", "Becky", DesireColor.Cyan),
-		new Goal ("challenge {0} to a dance-off", "Crystal", DesireColor.Red),
-		new Goal ("have a threesome with {0} and {1}", "Becky", "Crystal", DesireColor.Blue),
+//		new Goal ("Spend last moments with Crystal", "Crystal", DesireColor.Cyan),
+//		new Goal ("have sex with {0}", "Crystal", DesireColor.Yellow),
+//		new Goal ("profess love to {0}", "Becky", DesireColor.Cyan),
+//		new Goal ("talk to {0} about {1}", "Crystal", "Drugs", DesireColor.Magenta),
+//		new Goal ("reminisce with {0} about {1}", "Becky", "that time you did it in the apple tree", DesireColor.Green),
+//		new Goal ("apologize to {0} for {1}", "Becky", "all the sodomy", DesireColor.Orange),
+//		new Goal ("give a great gift to {0}", "Becky", DesireColor.Cyan),
+//		new Goal ("challenge {0} to a dance-off", "Crystal", DesireColor.Red),
+//		new Goal ("have a threesome with {0} and {1}", "Becky", "Crystal", DesireColor.Blue),
 	};
 	#endregion
 
@@ -48,8 +49,8 @@ public class Main : MonoBehaviour
 	}
 	#endregion
 	public void RegisterIdea(Idea idea) {
-		idea.instanceId = _ideaGenesis.Count;
-		_ideaGenesis.Add (idea.instanceId, idea);
+		idea.token_Id = _ideaGenesis.Count;
+		_ideaGenesis.Add (idea.token_Id, idea);
 	}
 }
 
@@ -62,13 +63,23 @@ public class World
 	public List<Item> communityItems;
 }
 
-public abstract class Idea
+[System.Serializable] public class Idea
 {
-	public int instanceId;
+	public int type_Id;
+	public int token_Id;
+	public string[] type_Objects;
+	public List<string> token_Objects;
 
-	public Idea () {
+	public string type_KindId;
+	public string type_Name;
+	public DesireColor type_DesireColor;
+	public string type_Description;
 
-	}
+	public Idea () { }
+}
+
+public class Interest : Idea {
+
 }
 
 public abstract class InstantiatedObject : Idea
@@ -79,36 +90,36 @@ public class Fact : Idea
 {
 	public virtual string subject { get; set; }
 
-	public string[] objects;
-	public string predicate;
+//	public string[] objects;
+//	public string predicate;
 
 	public Fact ()
 	{
 	}
 
-	public Fact (string predicate, string subject, string[] objects)
-	{
-		this.subject = subject;
-		this.predicate = predicate;
-		this.objects = objects;
-	}
+//	public Fact (string predicate, string subject, string[] objects)
+//	{
+//		this.subject = subject;
+//		this.predicate = predicate;
+//		this.objects = objects;
+//	}
 }
 
 public class CharacterAttribute : Fact
 {
 
-	public override string subject { get { return character; } }
-
-	public string character;
-
-	public CharacterAttribute () { }
-
-	public CharacterAttribute (string predicate, string subject, string[] objects)
-	{
-		this.predicate = predicate;
-		this.objects = objects;
-		this.character = subject;
-	}
+//	public override string subject { get { return character; } }
+//
+//	public string character;
+//
+//	public CharacterAttribute () { }
+//
+//	public CharacterAttribute (string predicate, string subject, string[] objects)
+//	{
+//		this.predicate = predicate;
+//		this.objects = objects;
+//		this.character = subject;
+//	}
 
 }
 
@@ -117,45 +128,40 @@ public class Goal : CharacterAttribute
 {
 	public string DisplayText {
 		get {
-			return Utilities.UppercaseFirst( string.Format (activity, target, instrument));
+			return Utilities.UppercaseFirst( string.Format (type_Name, tokenObjects));
 		}
 	}
+	public List<string> tokenObjects;
+//	public string target;
+//	public string activity;
+//	public string instrument;
+//	public DesireColor desireColor;
 
-	public string target;
-	public string activity;
-	public string instrument;
-	public DesireColor desireColor;
-
-	public Goal (string activity, string target, DesireColor desireColor)
-	{
-		this.activity = activity;
-		this.target = target;
-		this.desireColor = desireColor;
-	}
+//	public Goal (string activity, string target, DesireColor desireColor)
+//	{
+//		this.activity = activity;
+//		this.target = target;
+//		this.desireColor = desireColor;
+//	}
 		
-	public Goal (string activity, string target, string instrument, DesireColor desireColor)
-	{
-		this.activity = activity;
-		this.target = target;
-		this.instrument = instrument;
-		this.desireColor = desireColor;
-	}
+//	public Goal (string activity, string target, string instrument, DesireColor desireColor)
+//	{
+//		this.activity = activity;
+//		this.target = target;
+//		this.instrument = instrument;
+//		this.desireColor = desireColor;
+//	}
 }
 
 public class Belief : Idea
 {
-	public List<string> characters;
-	public string predicate;
+//	public List<string> characters;
+//	public string predicate;
 }
 
 public class Activity : Idea
 { 
-	public string activityName;
-
-	public Activity (string name)
-	{
-		this.activityName = name;
-	}
+	public Activity() { }
 }
 
 [System.Serializable]
@@ -199,18 +205,18 @@ public class Relationship : Idea
 	}
 }
 	#endregion
-public class GameData
-{
-//		public List<Goal> goalBank = new List<Goal> {
-//			new Goal()
+//public class GameData
+//{
+////		public List<Goal> goalBank = new List<Goal> {
+////			new Goal()
+////		};
+//	public List<Activity> activityBank = new List<Activity> {
+//			new Activity ("make out with"),
+//			new Activity ("chat about"),
 //		};
-	public List<Activity> activityBank = new List<Activity> {
-			new Activity ("make out with"),
-			new Activity ("chat about"),
-		};
-
-
-}
+//
+//
+//}
 
 public static class Utilities
 {

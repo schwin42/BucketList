@@ -43,14 +43,14 @@ public class UiController : MonoBehaviour {
 			
 			//Select and remove goal at random
 			int randomIndex = Random.Range(0, unorderedGoalsToDisplay.Count);
-			print ("monoAttribute = " + monoAttribute);
+			//print ("monoAttribute = " + monoAttribute);
 			monoAttribute.attribute = unorderedGoalsToDisplay[randomIndex];
 			unorderedGoalsToDisplay.RemoveAt(randomIndex);
 
 			Goal goal = monoAttribute.attribute as Goal;
 			             uiGoal.GetComponentInChildren<Text> ().text = goal.DisplayText;
 			uiGoal.GetComponent<DragHandler> ().Init ();
-			             uiGoal.GetComponent<Image>().color = goal.desireColor.ToColor();
+			             uiGoal.GetComponent<Image>().color = goal.type_DesireColor.ToColor();
 		}
 	}
 

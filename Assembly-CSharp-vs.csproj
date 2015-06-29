@@ -49,12 +49,14 @@
      <Compile Include="Assets\Appearance.cs" />
      <Compile Include="Assets\ButtonHandler.cs" />
      <Compile Include="Assets\DragHandler.cs" />
+     <Compile Include="Assets\GameData.cs" />
      <Compile Include="Assets\Highlighter.cs" />
      <Compile Include="Assets\Lerper.cs" />
      <Compile Include="Assets\Main.cs" />
      <Compile Include="Assets\MonoAttribute.cs" />
      <Compile Include="Assets\MonoCharacter.cs" />
      <Compile Include="Assets\Slot.cs" />
+     <Compile Include="Assets\Test.cs" />
      <Compile Include="Assets\UiController.cs" />
  <Reference Include="UnityEngine.Analytics">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
