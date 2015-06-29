@@ -65,7 +65,7 @@ public class World
 
 [System.Serializable] public class Idea
 {
-	public int type_Id;
+	public int template_Id;
 	public int token_Id;
 	public string[] type_Objects;
 	public List<string> token_Objects;

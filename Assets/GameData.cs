@@ -7,7 +7,18 @@ using System.Text.RegularExpressions;
 
 public class GameData : MonoBehaviour
 {
+	[System.Serializable] public class TemplateMaster
+	{
+		public List<Idea> ideas = new List<Idea>();
 
+		public void RegisterIdeas(List<Idea> ideas) {
+			for(int i = 0; i < ideas.Count; i++) {
+				Idea idea = ideas[i];
+				idea.template_Id = i;
+				this.ideas.Add(idea);
+			}
+		}
+	}
 	private static GameData _instance;
 
 	public static GameData Instance {
@@ -19,21 +30,22 @@ public class GameData : MonoBehaviour
 		}
 	}
 
-	public List<Idea> masterIdeaRecord;
+	public TemplateMaster templateMaster = new TemplateMaster();
+	
 	private const string SOURCE_FILENAME = "/GameData/BucketList Master - Ideas.tsv";
 
 	public void Start() {
-		masterIdeaRecord = LoadIdeas ();
+		templateMaster.RegisterIdeas(LoadData<Idea> ());
 	}
 
-	public List<Idea> LoadIdeas ()
+	public List<T> LoadData<T> () where T : class, new()
 	{
 		string fullFilename = Application.dataPath + SOURCE_FILENAME;
-		Debug.Log ("Loading data from" + fullFilename);
+		print ("Loading data from" + fullFilename);
 		string[] dataLines = File.ReadAllLines (fullFilename);
 		Dictionary<int, string> fieldLookup = new Dictionary<int, string> ();
 		
-		List<Idea> outputIdeas = new List<Idea> ();
+		List<T> outputIdeas = new List<T> ();
 		for (int i = 0; i < dataLines.Length; i++) {
 			if (i == 0) {
 				string [] fieldStrings = dataLines [0].Split ('\t');
@@ -42,7 +54,6 @@ public class GameData : MonoBehaviour
 					fieldLookup.Add (j, fieldStrings [j]);
 				}
 			} else {
-//				Idea record = new Idea (); 
 				string[] recordStrings = dataLines [i].Split ('\t'); //
 				Dictionary<string, string> recordFields = new Dictionary<string, string>();
 				for (int j = 0; j < fieldLookup.Count; j++) {
@@ -51,17 +62,19 @@ public class GameData : MonoBehaviour
 					}
 					
 				}
-				outputIdeas.Add (InstantiateIdea(recordFields));
-//				AttributeData.Add (recordAttribute);
+				outputIdeas.Add (InstantiateData<T>(recordFields));
 			}
-			
 		}
 		return outputIdeas;
 	}
 
-	Idea InstantiateIdea (Dictionary<string, string> fields)
+	T InstantiateData<T> (Dictionary<string, string> fields) where T : class, new()
 	{
-		Idea idea = new Idea ();
+		if (typeof(T) != typeof(Idea)) {
+			Debug.LogError("Invalid type: " + typeof(T));
+			return null as T;
+		}
+		Idea idea = new T () as Idea;
 //		switch (fields ["Type"]) {
 //		case "Activity":
 //			idea = new Activity();
@@ -101,8 +114,7 @@ public class GameData : MonoBehaviour
 				idea.type_Description = pair.Value;
 				break;
 			}
-
 		}
-		return idea;
+		return idea as T;
 	}
 }
