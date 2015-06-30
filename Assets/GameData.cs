@@ -34,7 +34,7 @@ public class GameData : MonoBehaviour
 	
 	private const string SOURCE_FILENAME = "/GameData/BucketList Master - Ideas.tsv";
 
-	public void Start() {
+	public void Load() {
 		templateMaster.RegisterIdeas(LoadData<Idea> ());
 	}
 
@@ -95,23 +95,28 @@ public class GameData : MonoBehaviour
 //			Debug.LogError("Invalid type: " + fields["Type"]);
 //			break;
 		foreach (KeyValuePair<string, string> pair in fields) {
+			if(string.IsNullOrEmpty(pair.Value)) {
+				continue;
+			}
 			switch(pair.Key) {
 			case "Kind":
-				idea.type_KindId = pair.Value;
+				idea.template_Kind = (Kind)Enum.Parse(typeof(Kind), pair.Value);
 				break;
 			case "Name":
-				idea.type_Name = pair.Value;
+				idea.template_Text = pair.Value;
 				break;
 			case "Objects":
-				idea.type_Objects = Regex.Split (pair.Value, ", ");
+				List<Kind> objects = new List<Kind>();
+				foreach(string s in	Regex.Split (pair.Value, ", ")) {
+					objects.Add((Kind)Enum.Parse(typeof(Kind), s));
+				}
+				idea.template_Objects = objects;
 				break;
 			case "Desire Color":
-				if(!string.IsNullOrEmpty(pair.Value)) {
-					idea.type_DesireColor = (DesireColor)Enum.Parse(typeof(DesireColor), pair.Value);
-				}
+				idea.template_DesireColor = (DesireColor)Enum.Parse(typeof(DesireColor), pair.Value);
 				break;
 			case "Description":
-				idea.type_Description = pair.Value;
+				idea.template_Description = pair.Value;
 				break;
 			}
 		}

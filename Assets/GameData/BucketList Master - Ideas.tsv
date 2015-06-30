@@ -1,10 +1,10 @@
 Kind	Name	Objects	Desire Color	Description
-Activity	apologize to {0} for {1}	Character, Past Event		
+Activity	apologize to {0} for {1}	Character, PastEvent		
 Activity	discuss {0} with {1}	Interest, Character	Magenta	
 Activity	give a meaningful gift to {0}	Character	Cyan	
 Activity	make out with {0}	Character	Yellow	
 Activity	profess love to {0}	Character		
-Activity	reminisce with {0} about {1}	Character, Past Event		
+Activity	reminisce with {0} about {1}	Character, PastEvent		
 Interest	dancing			
 Disposition	avoid {0}	Character	Green	
 Goal	Finish writing that book		Blue	
@@ -14,7 +14,7 @@ Goal	Have sex in zero gravity		Yellow
 Goal	Have sex with {0}	Character	Yellow	
 Goal	Identify and screw over a predator		Orange	
 Goal	Spend last moments with {0}	Character	Cyan	
-Goal	Try an array of drugs		Cyan	Drug Connoisseur
+Goal	Try an array of drugs		Magenta	Drug Connoisseur
 Goal	win a dance-off		Red	
 Interest	cosplay			
 Interest	cycling			
@@ -28,5 +28,5 @@ Interest	reading comics	Book
 Interest	sodomy			
 Interest	swimming			
 Interest	television			
-Past Event	all the sodomy	Past Event		
-Past Event	that time you did it with {0} in the apple tree	Character	Cyan	
+PastEvent	all the sodomy	PastEvent		
+PastEvent	that time you did it with {0} in the apple tree	Character	Cyan	

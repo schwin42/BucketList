@@ -2,59 +2,59 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Main : MonoBehaviour
 {
-	#region Data
-	public List<Character> characterRoster = new List<Character> {
-		new Character() {
-			characterName = "Alex",
-			relationships = new List<Relationship> { new Relationship("Becky", 0.8F, 0.7F, "married") },
-			attributes = new List<CharacterAttribute> { 
-//				new CharacterAttribute("{0} is married to {1}", "Alex", new [] {"Becky"}),
-//				new CharacterAttribute("{0} is attracted to {1}", "Alex", new [] {"Crystal"}), 
-			},
-		}
-	};
-	public List<Goal> potentialGoalsForAlex = new List<Goal> {
-//		new Goal ("Spend last moments with Crystal", "Crystal", DesireColor.Cyan),
-//		new Goal ("have sex with {0}", "Crystal", DesireColor.Yellow),
-//		new Goal ("profess love to {0}", "Becky", DesireColor.Cyan),
-//		new Goal ("talk to {0} about {1}", "Crystal", "Drugs", DesireColor.Magenta),
-//		new Goal ("reminisce with {0} about {1}", "Becky", "that time you did it in the apple tree", DesireColor.Green),
-//		new Goal ("apologize to {0} for {1}", "Becky", "all the sodomy", DesireColor.Orange),
-//		new Goal ("give a great gift to {0}", "Becky", DesireColor.Cyan),
-//		new Goal ("challenge {0} to a dance-off", "Crystal", DesireColor.Red),
-//		new Goal ("have a threesome with {0} and {1}", "Becky", "Crystal", DesireColor.Blue),
-	};
-	#endregion
 
 	#region Execution
 	private Dictionary<int, Idea> _ideaGenesis;
+
 	public Dictionary<int, Idea> ideaGenesis { //Master lookup of all ideas for this runtime
 		get {
 			return _ideaGenesis;
 		}
-	} 
+	}
 
 	public void Start ()
 	{
-		GenerateGoalPool ();
+		GameData.Instance.Load ();
 
-		UiController.instance.PopulateGoalPanel (potentialGoalsForAlex);
+
+		UiController.instance.PopulateGoalPanel (GenerateGoalPool ());
 	}
 
-	public void GenerateGoalPool () {
-		//potentialGoalsForAlex.Shuffle ();
+	public List<Idea> GenerateGoalPool ()
+	{
+
+		//TODO Selection of goals by character applicability
+
+		//Select all goals from database
+		return GameData.Instance.templateMaster.ideas.Where (i => i.template_Kind == Kind.Goal).ToList();
 	}
 	#endregion
-	public void RegisterIdea(Idea idea) {
+	public void RegisterIdea (Idea idea)
+	{
 		idea.token_Id = _ideaGenesis.Count;
 		_ideaGenesis.Add (idea.token_Id, idea);
 	}
 }
 
 	#region Model
+public enum Kind
+{
+	Character,
+	Goal,
+	Activity,
+	PastEvent,
+	Disposition,
+	Interest,
+	Film,
+	Game,
+	Band,
+	Book,
+}
+
 public class World
 {
 	
@@ -63,22 +63,25 @@ public class World
 	public List<Item> communityItems;
 }
 
-[System.Serializable] public class Idea
+[System.Serializable]
+public class Idea
 {
 	public int template_Id;
 	public int token_Id;
-	public string[] type_Objects;
-	public List<string> token_Objects;
+	public List<Kind> template_Objects;
+	public List<int> token_Objects;
+	public Kind template_Kind;
+	public string template_Text;
+	public DesireColor template_DesireColor;
+	public string template_Description;
 
-	public string type_KindId;
-	public string type_Name;
-	public DesireColor type_DesireColor;
-	public string type_Description;
-
-	public Idea () { }
+	public Idea ()
+	{
+	}
 }
 
-public class Interest : Idea {
+public class Interest : Idea
+{
 
 }
 
@@ -124,13 +127,14 @@ public class CharacterAttribute : Fact
 }
 
 [System.Serializable]
-public class Goal : CharacterAttribute
+public class Goal : Idea
 {
 	public string DisplayText {
 		get {
-			return Utilities.UppercaseFirst( string.Format (type_Name, tokenObjects));
+			return Utilities.UppercaseFirst (string.Format (template_Text, tokenObjects));
 		}
 	}
+
 	public List<string> tokenObjects;
 //	public string target;
 //	public string activity;
@@ -161,7 +165,9 @@ public class Belief : Idea
 
 public class Activity : Idea
 { 
-	public Activity() { }
+	public Activity ()
+	{
+	}
 }
 
 [System.Serializable]
@@ -173,7 +179,7 @@ public class Character : InstantiatedObject
 	public List<Item> inventory;
 	public Dictionary<string, float> stats;
 	//public List<string> traits;
-	public List<CharacterAttribute> attributes;
+	public List<Idea> attributes;
 	public List<Belief> beliefs;
 }
 
@@ -230,7 +236,8 @@ public static class Utilities
 		return char.ToUpper (s [0]) + s.Substring (1);
 	}
 
-	public static Color ToColor (this DesireColor desireColor) {
-		return Appearance.instance.inspector_reasonColors[(int)desireColor];
+	public static Color ToColor (this DesireColor desireColor)
+	{
+		return Appearance.instance.inspector_reasonColors [(int)desireColor];
 	}
 }

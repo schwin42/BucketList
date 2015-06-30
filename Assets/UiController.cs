@@ -15,7 +15,7 @@ public class UiController : MonoBehaviour {
 		}
 	}
 
-	public List<Goal> displayedPossibleGoals;
+	public List<Idea> displayedPossibleGoals;
 
 	public GameObject uiPrefab_Goal;
 	public GridLayoutGroup uiHierarchy_AttributeBankPanel;
@@ -28,7 +28,7 @@ public class UiController : MonoBehaviour {
 		_instance = this;
 	}
 
-	public void PopulateGoalPanel (List<Goal> unorderedGoalsToDisplay)
+	public void PopulateGoalPanel (List<Idea> unorderedGoalsToDisplay)
 	{
 		this.displayedPossibleGoals = unorderedGoalsToDisplay;
 		Slot[] slots = uiHierarchy_AttributeBankPanel.GetComponentsInChildren<Slot> ();
@@ -39,18 +39,19 @@ public class UiController : MonoBehaviour {
 			uiGoal.transform.SetParent (slot.gameObject.transform);
 			uiGoal.transform.localPosition = Vector3.zero;
 			uiGoal.transform.localScale = cachedScale;
-			MonoAttribute monoAttribute = uiGoal.GetComponent<MonoAttribute> ();
+			MonoIdea monoIdea = uiGoal.GetComponent<MonoIdea> ();
 			
 			//Select and remove goal at random
 			int randomIndex = Random.Range(0, unorderedGoalsToDisplay.Count);
 			//print ("monoAttribute = " + monoAttribute);
-			monoAttribute.attribute = unorderedGoalsToDisplay[randomIndex];
+			print ("index, goal list count: " + randomIndex + ", " + unorderedGoalsToDisplay.Count);
+			monoIdea.idea = unorderedGoalsToDisplay[randomIndex];
 			unorderedGoalsToDisplay.RemoveAt(randomIndex);
 
-			Goal goal = monoAttribute.attribute as Goal;
-			             uiGoal.GetComponentInChildren<Text> ().text = goal.DisplayText;
+//			Goal goal = monoIdea.idea as Goal;
+			uiGoal.GetComponentInChildren<Text> ().text = monoIdea.idea.template_Text;
 			uiGoal.GetComponent<DragHandler> ().Init ();
-			             uiGoal.GetComponent<Image>().color = goal.type_DesireColor.ToColor();
+			uiGoal.GetComponent<Image>().color = monoIdea.idea.template_DesireColor.ToColor();
 		}
 	}
 
@@ -62,7 +63,7 @@ public class UiController : MonoBehaviour {
 		//TODO Handling for multiple ui modes
 
 		//Display info for Attribute
-		string output = ((Goal)buttonGo.GetComponent<MonoAttribute> ().attribute).DisplayText;
+		string output = buttonGo.GetComponent<MonoIdea> ().idea.template_Text;
 		UiHierarchy_AttributeInfoPanel.GetComponentInChildren<Text> ().text = output;
 	}
 

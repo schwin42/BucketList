@@ -7,11 +7,11 @@ public class Highlighter : MonoBehaviour
 
 	public float ACTIVE_ALPHA = .3F;
 	private Image uiHierarchy_SelectedBorder;
-	private MonoAttribute monoAttribute;
+	private MonoIdea monoAttribute;
 
 	void Awake () {
 		uiHierarchy_SelectedBorder = transform.FindChild ("SelectedBorder").GetComponent<Image> ();
-		monoAttribute = GetComponent<MonoAttribute> ();
+		monoAttribute = GetComponent<MonoIdea> ();
 		//print (monoAttribute);
 		enableHighlight = false;
 	}
@@ -32,7 +32,7 @@ public class Highlighter : MonoBehaviour
 
 			if (value == true) { //On enable, set alpha and Attribute color
 				//print (transform.parent.GetComponent<MonoAttribute>());
-				Color attributeColor = monoAttribute.attribute.type_DesireColor.ToColor ();
+				Color attributeColor = monoAttribute.idea.template_DesireColor.ToColor ();
 				uiHierarchy_SelectedBorder.color = new Color (attributeColor.r, 
 				                                              attributeColor.g, 
 				                                              attributeColor.b, 
