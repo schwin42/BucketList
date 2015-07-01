@@ -44,7 +44,7 @@ public class UiController : MonoBehaviour {
 			//Select and remove goal at random
 			int randomIndex = Random.Range(0, unorderedGoalsToDisplay.Count);
 			//print ("monoAttribute = " + monoAttribute);
-			print ("index, goal list count: " + randomIndex + ", " + unorderedGoalsToDisplay.Count);
+//			print ("index, goal list count: " + randomIndex + ", " + unorderedGoalsToDisplay.Count);
 			monoIdea.idea = unorderedGoalsToDisplay[randomIndex];
 			unorderedGoalsToDisplay.RemoveAt(randomIndex);
 
@@ -72,5 +72,9 @@ public class UiController : MonoBehaviour {
 			this.selectedButton.GetComponent<Highlighter> ().enableHighlight = false;
 			this.selectedButton = null;
 		}
+	}
+
+	public void SelectTab (GameObject tabToggle) {
+		StateMachine.instance.SetActiveTabIndex (tabToggle.transform.GetSiblingIndex ());
 	}
 }
