@@ -10,7 +10,7 @@ public class ToggleState : MonoBehaviour {
 
 	public void OnValueChanged (bool isOn) {
 		if (isOn) {
-			UiController.instance.SelectTab(gameObject);
+			UiController.instance.HandlePointerClickOnTab(gameObject);
 		}
 	}
 }

@@ -21,6 +21,7 @@ public class Slot : MonoBehaviour, IDropHandler {
 		if (!item) {
 //			print ("set transform to " + transform.name
 			DragHandler.itemBeingDragged.GetComponent<DragHandler>().nextParent = transform;
+			UiController.instance.HandleDragCompletionOnTile(DragHandler.itemBeingDragged);
 		}
 	}
 	#endregion

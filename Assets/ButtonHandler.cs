@@ -18,7 +18,7 @@ public class ButtonHandler : MonoBehaviour, IPointerDownHandler {
 
 	public void OnPointerDown (PointerEventData eventData)
 	{
-		UiController.instance.SelectButton (gameObject);
+		UiController.instance.HandlePointerDownOnTile (gameObject);
 	}
 
 	#endregion

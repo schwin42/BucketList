@@ -26,8 +26,6 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		lerper.TerminateLerp ();
 		UiController.instance.SelectButton (gameObject);
 		itemBeingDragged = gameObject;
-//		startPosition = transform.position;
-//		startParent = 
 		nextParent = transform.parent;
 
 		//Move draggable to window and order last to move to front. This is dumb.
@@ -35,6 +33,8 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		transform.SetAsLastSibling ();
 
 		GetComponent<CanvasGroup> ().blocksRaycasts = false;
+
+		UiController.instance.HandleBeginDragOnTile (gameObject);
 	}
 
 	void IDragHandler.OnDrag (PointerEventData eventData)

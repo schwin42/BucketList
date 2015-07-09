@@ -17,10 +17,12 @@ public class UiController : MonoBehaviour {
 
 	public List<Idea> displayedPossibleGoals;
 
-	public GameObject uiPrefab_Goal;
-	public GridLayoutGroup uiHierarchy_AttributeBankPanel;
-	public GameObject UiHierarchy_AttributeInfoPanel;
-	public GameObject selectedButton;
+	public GameObject runtime_HighlightedButton;
+	public GameObject prefab_Goal;
+	public List<AudioClip> prefab_Sounds;
+	public GridLayoutGroup hierarchy_AttributeBankPanel;
+	public GameObject hierarchy_AttributeInfoPanel;
+
 
 
 	// Use this for initialization
@@ -28,13 +30,15 @@ public class UiController : MonoBehaviour {
 		_instance = this;
 	}
 
-	public void PopulateGoalPanel (List<Idea> unorderedGoalsToDisplay)
+	public void PopulateGoalPanel ()
 	{
+		print ("pop");
+		List<Idea> unorderedGoalsToDisplay = Main.instance.AvailableGoalsForAlex;
 		this.displayedPossibleGoals = unorderedGoalsToDisplay;
-		Slot[] slots = uiHierarchy_AttributeBankPanel.GetComponentsInChildren<Slot> ();
+		Slot[] slots = hierarchy_AttributeBankPanel.GetComponentsInChildren<Slot> ();
 		for (int i = 0; i < slots.Length; i++) {
 			Slot slot = slots [i];
-			GameObject uiGoal = Instantiate<GameObject> (uiPrefab_Goal);
+			GameObject uiGoal = Instantiate<GameObject> (prefab_Goal);
 			Vector3 cachedScale = uiGoal.transform.localScale;
 			uiGoal.transform.SetParent (slot.gameObject.transform);
 			uiGoal.transform.localPosition = Vector3.zero;
@@ -55,26 +59,48 @@ public class UiController : MonoBehaviour {
 		}
 	}
 
+	public void HandlePointerDownOnTile (GameObject tileGo) {
+		UnhighlightCurrentButton ();
+		this.runtime_HighlightedButton = tileGo;
+		tileGo.GetComponent<Highlighter> ().enableHighlight = true;
+	}
+
+	public void HandleBeginDragOnTile (GameObject tileGo) {
+		//Play depart sound
+		PlaySound (0);
+	}
+
+	public void HandleDragCompletionOnTile (GameObject tileGo) {
+		//Play arrive sound
+		PlaySound (1);
+	}
+
 	public void SelectButton (GameObject buttonGo)
 	{
-		DeselectCurrentButton ();
-		this.selectedButton = buttonGo;
-		buttonGo.GetComponent<Highlighter> ().enableHighlight = true;
-		//TODO Handling for multiple ui modes
+		print (buttonGo.name);
 
 		//Display info for Attribute
 		string output = buttonGo.GetComponent<MonoIdea> ().idea.template_Text;
-		UiHierarchy_AttributeInfoPanel.GetComponentInChildren<Text> ().text = output;
+		hierarchy_AttributeInfoPanel.GetComponentInChildren<Text> ().text = output;
+
+
 	}
 
-	public void DeselectCurrentButton () {
-		if (this.selectedButton) {
-			this.selectedButton.GetComponent<Highlighter> ().enableHighlight = false;
-			this.selectedButton = null;
+	public void UnhighlightCurrentButton () {
+		if (this.runtime_HighlightedButton) {
+			this.runtime_HighlightedButton.GetComponent<Highlighter> ().enableHighlight = false;
+			this.runtime_HighlightedButton = null;
 		}
 	}
 
-	public void SelectTab (GameObject tabToggle) {
+	public void HandlePointerClickOnTab (GameObject tabToggle) {
 		StateMachine.instance.SetActiveTabIndex (tabToggle.transform.GetSiblingIndex ());
+
+		//Play sound
+		PlaySound (0);
+	}
+
+	public void PlaySound (int index) {
+		AudioSource.PlayClipAtPoint (prefab_Sounds [index], transform.position);
 	}
 }

@@ -6,8 +6,27 @@ using System.Linq;
 
 public class Main : MonoBehaviour
 {
-
 	#region Execution
+	private static Main _instance;
+	public static Main instance {
+		get {
+			if(!_instance) {
+				_instance = GameObject.FindObjectOfType<Main>();
+			} 
+			return _instance;
+		}
+		set {
+			_instance = value;
+		}
+	}
+
+	public List<Idea> AvailableGoalsForAlex {
+		get {
+			return GenerateGoalPool();
+		}
+	}
+
+
 	private Dictionary<int, Idea> _ideaGenesis;
 
 	public Dictionary<int, Idea> ideaGenesis { //Master lookup of all ideas for this runtime
@@ -16,12 +35,14 @@ public class Main : MonoBehaviour
 		}
 	}
 
+	void Awake () {
+		_instance = this;
+	}
+
 	public void Start ()
 	{
 		GameData.Instance.Load ();
 
-
-		UiController.instance.PopulateGoalPanel (GenerateGoalPool ());
 	}
 
 	public List<Idea> GenerateGoalPool ()
@@ -211,18 +232,7 @@ public class Relationship : Idea
 	}
 }
 	#endregion
-//public class GameData
-//{
-////		public List<Goal> goalBank = new List<Goal> {
-////			new Goal()
-////		};
-//	public List<Activity> activityBank = new List<Activity> {
-//			new Activity ("make out with"),
-//			new Activity ("chat about"),
-//		};
-//
-//
-//}
+
 
 public static class Utilities
 {
