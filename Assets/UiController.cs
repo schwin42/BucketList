@@ -32,7 +32,6 @@ public class UiController : MonoBehaviour {
 
 	public void PopulateGoalPanel ()
 	{
-		print ("pop");
 		List<Idea> unorderedGoalsToDisplay = Main.instance.AvailableGoalsForAlex;
 		this.displayedPossibleGoals = unorderedGoalsToDisplay;
 		Slot[] slots = hierarchy_AttributeBankPanel.GetComponentsInChildren<Slot> ();
@@ -57,6 +56,21 @@ public class UiController : MonoBehaviour {
 			uiGoal.GetComponent<DragHandler> ().Init ();
 			uiGoal.GetComponent<Image>().color = monoIdea.idea.template_DesireColor.ToColor();
 		}
+	}
+
+	public List<Character> GetTargetChoices ()
+	{
+		return Main.instance.PossibleTargets;
+	}
+
+	public List<Idea> GetActivityChoices ()
+	{
+		return Main.instance.PossibleActivities;
+	}
+
+	public List<Idea> GetStyleChoices ()
+	{
+		return Main.instance.PossibleStyles;
 	}
 
 	public void HandlePointerDownOnTile (GameObject tileGo) {

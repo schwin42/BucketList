@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ModeManager : MonoBehaviour {
 
+	public int startingTabIndex;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -10,6 +12,6 @@ public class ModeManager : MonoBehaviour {
 		TabManager tabManager = GetComponentInChildren<TabManager> ();
 
 		panelManager.DeactivatePanels ();
-		tabManager.SelectFirstTab ();
+		tabManager.SelectStartingTab (startingTabIndex);
 	}
 }

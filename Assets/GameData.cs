@@ -30,13 +30,18 @@ public class GameData : MonoBehaviour
 		}
 	}
 
-	public TemplateMaster templateMaster = new TemplateMaster();
-	
-	private const string SOURCE_FILENAME = "/GameData/BucketList Master - Ideas.tsv";
-
-	public void Load() {
-		templateMaster.RegisterIdeas(LoadData<Idea> ());
+	private TemplateMaster _templateMaster = null;
+	public TemplateMaster templateMaster {
+		get {
+			if(_templateMaster == null) {
+				_templateMaster = new TemplateMaster ();
+				_templateMaster.RegisterIdeas(LoadData<Idea> ());
+			}
+			return _templateMaster;
+		}
 	}
+
+	private const string SOURCE_FILENAME = "/GameData/BucketList Master - Ideas.tsv";
 
 	public List<T> LoadData<T> () where T : class, new()
 	{

@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class TabManager : MonoBehaviour {
 
-	public void SelectFirstTab ()
+	public void SelectStartingTab (int index)
 	{
 		Toggle[] toggles = GetComponentsInChildren<Toggle> ();
-		toggles [0].Select();
-		toggles [0].isOn = true;
+		toggles [index].Select();
+		toggles [index].isOn = true;
 	}
 }

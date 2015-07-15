@@ -7,6 +7,8 @@ using System.Linq;
 public class Main : MonoBehaviour
 {
 	#region Execution
+
+
 	private static Main _instance;
 	public static Main instance {
 		get {
@@ -20,6 +22,28 @@ public class Main : MonoBehaviour
 		}
 	}
 
+	public List<Character> PossibleTargets {
+		get {
+			return new List<Character> {
+				new Character("Becky"),
+				new Character("Christy"),
+			};
+		}
+	}
+
+	public List<Idea> PossibleActivities {
+		get {
+//			print ("Activity count: " + GameData.Instance.templateMaster.ideas.Where(i => i.template_Kind == Kind.Activity).Count());
+			return GameData.Instance.templateMaster.ideas.Where(i => i.template_Kind == Kind.Activity).ToList();
+		}
+	}
+
+	public List<Idea> PossibleStyles {
+		get {
+			return GameData.Instance.templateMaster.ideas.Where(i => i.template_Kind == Kind.Style).ToList();
+		}
+	}
+
 	public List<Idea> AvailableGoalsForAlex {
 		get {
 			return GenerateGoalPool();
@@ -27,9 +51,9 @@ public class Main : MonoBehaviour
 	}
 
 
-	private Dictionary<int, Idea> _ideaGenesis;
+	private static Dictionary<int, Idea> _ideaGenesis = new Dictionary<int, Idea> ();
 
-	public Dictionary<int, Idea> ideaGenesis { //Master lookup of all ideas for this runtime
+	public static Dictionary<int, Idea> ideaGenesis { //Master lookup of all ideas for this runtime
 		get {
 			return _ideaGenesis;
 		}
@@ -41,7 +65,7 @@ public class Main : MonoBehaviour
 
 	public void Start ()
 	{
-		GameData.Instance.Load ();
+		//GameData.Instance.Load ();
 
 	}
 
@@ -54,7 +78,7 @@ public class Main : MonoBehaviour
 		return GameData.Instance.templateMaster.ideas.Where (i => i.template_Kind == Kind.Goal).ToList();
 	}
 	#endregion
-	public void RegisterIdea (Idea idea)
+	public static void RegisterIdea (Idea idea)
 	{
 		idea.token_Id = _ideaGenesis.Count;
 		_ideaGenesis.Add (idea.token_Id, idea);
@@ -74,6 +98,13 @@ public enum Kind
 	Game,
 	Band,
 	Book,
+	Style,
+	Food,
+	Item,
+	Drug,
+	Stat,
+	Skill,
+	RelationshipStat,
 }
 
 public class World
@@ -98,6 +129,7 @@ public class Idea
 
 	public Idea ()
 	{
+		Main.RegisterIdea (this);
 	}
 }
 
@@ -202,6 +234,10 @@ public class Character : InstantiatedObject
 	//public List<string> traits;
 	public List<Idea> attributes;
 	public List<Belief> beliefs;
+
+	public Character (string name) {
+		characterName = name;
+	}
 }
 
 [System.Serializable]
